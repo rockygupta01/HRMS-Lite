@@ -10,10 +10,13 @@ const attendanceRoutes = require("./routes/attendanceRoutes");
 const { notFoundHandler, errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
+const corsOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
+  : "*";
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : "*",
+    origin: corsOrigins,
   })
 );
 app.use(helmet());
@@ -22,12 +25,15 @@ if (process.env.NODE_ENV !== "test") {
   app.use(morgan("dev"));
 }
 
-app.get("/api/health", (_req, res) => {
+const healthHandler = (_req, res) => {
   res.status(200).json({
     status: "ok",
     timestamp: new Date().toISOString(),
   });
-});
+};
+
+app.get("/health", healthHandler);
+app.get("/api/health", healthHandler);
 
 app.use("/employees", employeeRoutes);
 app.use("/attendance", attendanceRoutes);

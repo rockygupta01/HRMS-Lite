@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: hrms-lite-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5001
+      - key: DB_STORAGE
+        value: /var/data/hrms.sqlite
+      - key: CORS_ORIGIN
+        sync: false
+    disk:
+      name: hrms-sqlite-data
+      mountPath: /var/data
+      sizeGB: 1
