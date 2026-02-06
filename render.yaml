@@ -9,13 +9,15 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 5001
-      - key: DB_STORAGE
-        value: /var/data/hrms.sqlite
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hrms-lite-db
+          property: connectionString
       - key: CORS_ORIGIN
         sync: false
-    disk:
-      name: hrms-sqlite-data
-      mountPath: /var/data
-      sizeGB: 1
+
+databases:
+  - name: hrms-lite-db
+    databaseName: hrms_lite
+    user: hrms_user
+    plan: free
